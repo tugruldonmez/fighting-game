@@ -8,19 +8,45 @@ c.fillRect(0,0,canvas.width,canvas.height)
 const gravity=0.73
 
 class Sprite{//player ı oluşturan class
-    constructor({position,velocity}){
+    constructor({position,velocity,color='blue',offset}){
         this.position=position
         this.velocity=velocity
+        this.width=50
         this.height=150
         this.lastKey
+        this.attackBox={
+            position: {
+                x:this.position.x,
+                y:this.position.y
+            },
+            offset:offset,
+            width: 100,
+            height: 50
+        }
+        this.color=color
+        this.isAttacking//atak tuşuna basıldığında
     }
     
     draw(){
-        c.fillStyle='red'
-        c.fillRect(this.position.x,this.position.y,50,this.height)
+        c.fillStyle=this.color
+        c.fillRect(this.position.x,this.position.y,this.width,this.height)
+        //attackBox
+        if(this.isAttacking){//sadece saldırdığında kılıç gözükecek
+            c.fillStyle='green'
+            c.fillRect(
+                this.attackBox.position.x,
+                this.attackBox.position.y,
+                this.attackBox.width,
+                this.attackBox.height
+                )
+        }
+        
     }
     update(){
         this.draw()
+        this.attackBox.position.x=this.position.x-this.attackBox.offset.x//offseti çıkararak enemynin kılıcını diğer tarafa aldık
+        this.attackBox.position.y=this.position.y
+
         this.position.x+=this.velocity.x
         this.position.y+=this.velocity.y
         if(this.position.y+this.height+this.velocity.y >=578)// ekranın altına geldiğinde karakterlerin ekrandan çıkmaması için =0
@@ -30,6 +56,14 @@ class Sprite{//player ı oluşturan class
         else{
             this.velocity.y+=gravity
         }
+    }
+    attack(){
+        this.isAttacking=true
+        setTimeout(()=>{
+            this.isAttacking=false
+        },
+        100//atak yaptıktan sonra 100ms gecikme
+        )
     }
     
 }
@@ -41,6 +75,10 @@ const player = new Sprite({
     velocity: {
       x: 0,
       y: 0
+    },
+    offset:{
+        x: 0,
+        y: 0
     }
 })
 const enemy = new Sprite({
@@ -51,7 +89,12 @@ const enemy = new Sprite({
     velocity: {
       x: 0,
       y: 0
-    }
+    },
+    offset:{
+        x: +50,
+        y: 0
+    },
+    color:'red'
 })
 
 const keys={
@@ -69,7 +112,16 @@ const keys={
     },
 }
 
-let lastKey
+function rectangularCollision({rectangle1, rectangle2}){
+    return (
+            rectangle1.attackBox.position.x + rectangle1.attackBox.width>=//attackbox düşmana x ekseninde değiyorsa 
+            rectangle2.position.x&&
+            rectangle1.attackBox.position.x<=rectangle2.position.x+rectangle2.width&&
+            rectangle1.attackBox.position.y+rectangle1.attackBox.height>=
+            rectangle2.position.y&&
+            rectangle1.attackBox.position.y<=rectangle2.position.y+rectangle2.height        
+    )
+}
 
 function animate(){
     window.requestAnimationFrame(animate)
@@ -97,6 +149,28 @@ function animate(){
         enemy.velocity.x=4
     }
 
+    //player enemy'e vurduğunda çalışacak kod
+    if(rectangularCollision({
+        rectangle1:player,
+        rectangle2:enemy
+
+    })&&
+        player.isAttacking
+        ){
+            player.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
+            console.log('player attack')
+        }
+    //enemy player'a vurduğunda çalışacak kod
+    if(rectangularCollision({
+        rectangle1:enemy,
+        rectangle2:player
+
+    })&&
+        enemy.isAttacking
+        ){
+            enemy.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
+            console.log('enemy attack')
+        }
 }
 animate()
 
@@ -114,6 +188,9 @@ window.addEventListener('keydown',(Event) =>{//tuşa basıldığında hareket et
         case 'w':
             player.velocity.y=-10
             break
+        case' ':
+            player.attack()
+            break
 //enemy keys
         case 'ArrowRight':
             keys.ArrowRight.pressed=true
@@ -126,8 +203,10 @@ window.addEventListener('keydown',(Event) =>{//tuşa basıldığında hareket et
         case 'ArrowUp':
             enemy.velocity.y=-10
             break
+        case 'p':
+            enemy.attack()
+            break
     }
-    console.log(Event.key);
 })
 window.addEventListener('keyup',(Event) =>{//eli tuştan kaldırdığında hareketi durduran
     switch(Event.key){
