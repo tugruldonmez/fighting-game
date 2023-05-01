@@ -5,7 +5,7 @@ canvas.width=1024
 canvas.height=578
 c.fillRect(0,0,canvas.width,canvas.height)
 
-const gravity=0.75
+const gravity=0.73
 
 class Sprite{//player ı oluşturan class
     constructor({position,velocity}){
