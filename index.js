@@ -25,6 +25,7 @@ class Sprite{//player ı oluşturan class
         }
         this.color=color
         this.isAttacking//atak tuşuna basıldığında
+        this.health=100
     }
     
     draw(){
@@ -122,6 +123,33 @@ function rectangularCollision({rectangle1, rectangle2}){
             rectangle1.attackBox.position.y<=rectangle2.position.y+rectangle2.height        
     )
 }
+function determineWinner({player,enemy,timerId}){
+    clearTimeout(timerId)
+    document.querySelector('#displayText').style.display='flex'//bu satır sadece savaş bittiğinde display='flex' olmasını sağlar
+    if(player.health>enemy.health){
+        document.querySelector('#displayText').innerHTML='Player 1 Wins !!'
+        
+    }
+    else if(player.health<enemy.health){
+        document.querySelector('#displayText').innerHTML='Player 2 Wins !!'
+    }
+    else{
+        document.querySelector('#displayText').innerHTML=='Draw !!'
+    }
+}
+let timer=60
+let timerId
+function decreaseTimer(){
+    if (timer>0){
+        timerId=setTimeout(decreaseTimer,1000)// setTimeout belirtilen fonksiyonu belirtilen süre(ms) içerisinde tekrar tekrar çalıştırır
+        timer--
+        document.querySelector('#timer').innerHTML=timer//innerHTML dememizin sebebi style veya div in fonksiyonlarıyla değil divin içindeki nesneyi işlememiz
+    }
+    else{
+        determineWinner({player,enemy})
+    }
+}
+decreaseTimer()
 
 function animate(){
     window.requestAnimationFrame(animate)
@@ -158,7 +186,8 @@ function animate(){
         player.isAttacking
         ){
             player.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
-            console.log('player attack')
+            enemy.health-=20
+            document.querySelector('#enemyHealth').style.width=enemy.health+'%'//document.querySelector html dosyasına erişmemizi sağlar
         }
     //enemy player'a vurduğunda çalışacak kod
     if(rectangularCollision({
@@ -169,7 +198,13 @@ function animate(){
         enemy.isAttacking
         ){
             enemy.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
-            console.log('enemy attack')
+            player.health-=20
+            document.querySelector('#playerHealth').style.width=player.health+'%'
+        }
+
+        //Canlar sıfırlanınca kazananı yazdır
+        if(enemy.health<=0||player.health<=0){
+            determineWinner({player,enemy,timerId})
         }
 }
 animate()

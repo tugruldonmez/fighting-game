@@ -1,2 +1,59 @@
-<canvas></canvas>
+<head>
+<style>/*style kodunun başına koyulan "*" bütün bodynin stili olarak kabul edilir*/
+    *{
+        box-sizing: border-box;
+    }
+</style>
+
+</head>
+
+<body>
+    <!--Ana Div (container)-->
+    <div style="position: relative; 
+    display: inline-block;"><!--position relative diğer divlerin (position: absolute olanları) ekran dışına çıkmamasını sağlar
+    display: inline-block altta %100 width verdiğimiz divlerin sadece main canvasın %100 ünün dolmasını sağlar-->
+        <!--Healthbarlar ve timer ın divi-->
+        <div style="position: absolute;
+         display: flex; 
+         width: 100%; 
+         align-items: center;
+         padding: 20px;"><!--Displey flex divleri aynı satıra sığdırır-->
+            <!--Player healthbar-->
+            <div style="position: relative; height: 50px; width: 100%; display: flex; justify-content: flex-end;">
+                <div style="background-color: gold; height: 50px; width: 100%;"></div>
+                <div id="playerHealth" style="position: absolute; 
+                background-color: royalblue; 
+                top: 0; bottom: 0; right: 0; width: 100%;">
+                </div><!--0 pixel dememizin sebebi parent div ile arasındaki boşluğun 0 olmasını istememiz-->
+            </div>
+            <!--Timer-->
+            <div id= timer style="background-color: brown;
+             width: 120;
+             height: 100; 
+             flex-shrink: 0; display: flex;
+             align-items: center;
+             justify-content: center;"><!--flex shrink 0 main divdeki flexten etkilenmemesini sağlar-->
+             <!--align-items: center; dikey olarak justify-content: center; yatay olarak ortalar-->
+
+             60
+
+             </div>
+            <!--Enemy healthbar-->
+            <div style="position: relative; height: 50px; width: 100%;">
+                <div style="background-color: gold; height: 50px; width: 100%;"></div>
+                <div id="enemyHealth" style="position: absolute; 
+                background-color: royalblue; 
+                top: 0; bottom: 0; left: 0; right: 0;">
+                </div><!--0 pixel dememizin sebebi parent div ile arasındaki boşluğun 0 olmasını istememiz-->
+            </div>
+        </div>
+        <div id ="displayText"style="position: absolute; color: bisque; 
+        display: none; 
+        align-items: center; justify-content: center; 
+        top: 0; bottom: 0; left: 0; right: 0;"><!--Display none dememizin sebebi savaş bittiğinde sonucu yazdırmasını istememiz-->
+            Tie
+        </div>
+        <canvas></canvas>
+    </div>
 <script src="index.js"></script>
+</body>
