@@ -1,0 +1,7 @@
+-game doesnt ends when one player win
+-new weapons
+-new map
+-new chars
+-skills
+-char select
+-2 jumps for one time
