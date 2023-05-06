@@ -1,6 +1,7 @@
 window.addEventListener('keydown',(Event) =>{//tuşa basıldığında hareket ettiren
+    if(!player.dead){
+    //player keys
     switch(Event.key){
-//player keys
         case 'd':
             keys.d.pressed=true
             player.lastKey='d'
@@ -14,8 +15,12 @@ window.addEventListener('keydown',(Event) =>{//tuşa basıldığında hareket et
             break
         case' ':
             player.attack()
-            break
-//enemy keys
+            break 
+    }
+}
+    if(!enemy.dead){
+    //enemy keys
+    switch(Event.key){
         case 'ArrowRight':
             keys.ArrowRight.pressed=true
             enemy.lastKey='ArrowRight'
@@ -31,7 +36,9 @@ window.addEventListener('keydown',(Event) =>{//tuşa basıldığında hareket et
             enemy.attack()
             break
     }
-})
+}
+}
+)
 window.addEventListener('keyup',(Event) =>{//eli tuştan kaldırdığında hareketi durduran
     switch(Event.key){
 

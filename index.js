@@ -64,8 +64,24 @@ const player = new Fighter({
         attack1:{
             imageSrc:'./img/samuraiMack/Attack1.png',
             framesMax:6
-        }
-    }
+        },
+        takeHit:{
+            imageSrc:'./img/samuraiMack/Takehit.png',
+            framesMax:4
+        },
+        death:{
+            imageSrc:'./img/samuraiMack/Death.png',
+            framesMax:6
+        },
+    },
+    attackBox: {
+        offset: {
+          x: -100,
+          y: -50
+        },
+        width: 50,
+        height: 50
+      }
 })
 const enemy = new Fighter({
     position: {
@@ -108,7 +124,24 @@ const enemy = new Fighter({
         attack1:{
             imageSrc:'./img/kenji/Attack1.png',
             framesMax:4
-        }
+        },
+        takeHit:{
+            imageSrc:'./img/kenji/Takehit.png',
+            framesMax:3
+        },
+        death:{
+            imageSrc:'./img/kenji/Death.png',
+            framesMax:7
+        },
+        
+    },
+    attackBox: {
+        offset: {
+        x: 100,
+        y: -50
+        },
+        width: 100,
+        height: 50
     }
 }
         )
@@ -186,28 +219,43 @@ function animate(){
         rectangle2:enemy
 
     })&&
-        player.isAttacking
+        player.isAttacking && player.framesCurrent===4
         ){
             player.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
-            enemy.health-=20
+            enemy.health-=10
+            enemy.switchSprites('takeHit')
             document.querySelector('#enemyHealth').style.width=enemy.health+'%'//document.querySelector html dosyasına erişmemizi sağlar
         }
+    //player misslerse
+    if(player.isAttacking &&player.framesCurrent===4){
+        player.isAttacking= false
+    }    
     //enemy player'a vurduğunda çalışacak kod
     if(rectangularCollision({
         rectangle1:enemy,
         rectangle2:player
 
     })&&
-        enemy.isAttacking
+        enemy.isAttacking && enemy.framesCurrent===2
         ){
             enemy.isAttacking=false//tek atakta düşmana bir kere hasar vurulması için
-            player.health-=20
+            player.health-=5
+            player.switchSprites('takeHit')
             document.querySelector('#playerHealth').style.width=player.health+'%'
         }
+      if(enemy.isAttacking &&enemy.framesCurrent===2){
+            enemy.isAttacking= false
+        }   
 
         //Canlar sıfırlanınca kazananı yazdır
         if(enemy.health<=0||player.health<=0){
             determineWinner({player,enemy,timerId})
+            if(enemy.health<=0){
+                enemy.switchSprites('death')
+            }
+            else if(player.health<=0){
+                player.switchSprites('death')
+            }
         }
 }
 animate()
