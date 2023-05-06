@@ -21,7 +21,7 @@ const Shop=new Sprite({
     },
     imageSrc:'./img/shop.png',
     scale:2,
-    framesMax:6
+    framesMax:6,
 })
 
 const player = new Fighter({
@@ -36,6 +36,35 @@ const player = new Fighter({
     offset:{
         x: 0,
         y: 0
+    },
+    imageSrc:'./img/samuraiMack/Idle.png',
+    framesMax:8,
+    scale:2,
+    offset: {
+        x:100  ,
+        y:100
+    },
+    sprites: {
+        idle:{
+            imageSrc:'./img/samuraiMack/Idle.png',
+            framesMax:8
+        },
+        run:{
+            imageSrc:'./img/samuraiMack/Run.png',
+            framesMax:8
+        },
+        jump:{
+            imageSrc:'./img/samuraiMack/Jump.png',
+            framesMax:2
+        },
+        fall:{
+            imageSrc:'./img/samuraiMack/Fall.png',
+            framesMax:2
+        },
+        attack1:{
+            imageSrc:'./img/samuraiMack/Attack1.png',
+            framesMax:6
+        }
     }
 })
 const enemy = new Fighter({
@@ -51,8 +80,38 @@ const enemy = new Fighter({
         x: +50,
         y: 0
     },
-    color:'red'
-})
+    color:'red',
+    imageSrc:'./img/kenji/Idle.png',
+    framesMax:4,
+    scale:2,
+    offset: {
+        x:100  ,
+        y:110
+    },
+    sprites: {
+        idle:{
+            imageSrc:'./img/kenji/Idle.png',
+            framesMax:4
+        },
+        run:{
+            imageSrc:'./img/kenji/Run.png',
+            framesMax:8
+        },
+        jump:{
+            imageSrc:'./img/kenji/Jump.png',
+            framesMax:2
+        },
+        fall:{
+            imageSrc:'./img/kenji/Fall.png',
+            framesMax:2
+        },
+        attack1:{
+            imageSrc:'./img/kenji/Attack1.png',
+            framesMax:4
+        }
+    }
+}
+        )
 
 const keys={
     a:{
@@ -83,21 +142,42 @@ function animate(){
 
     player.velocity.x=0//tuştan kaldırılınca hareket etmemesini sağlar
     enemy.velocity.x=0
-
     //player hareketleri için
     if(keys.a.pressed&& player.lastKey=='a'){
         player.velocity.x=-4
+        player.switchSprites('run')
     }
     else if(keys.d.pressed&& player.lastKey=='d'){
         player.velocity.x=4
+        player.switchSprites('run')
+    }
+    else{
+        player.switchSprites('idle')
+    }
+    if(player.velocity.y<0){
+        player.switchSprites('jump')
+    }
+    else if(player.velocity.y>0){
+        player.switchSprites('fall')
     }
 
     //enemy hareketleri için
     if(keys.ArrowLeft.pressed&& enemy.lastKey=='ArrowLeft'){
         enemy.velocity.x=-4
+        enemy.switchSprites('run')
     }
     else if(keys.ArrowRight.pressed&& enemy.lastKey=='ArrowRight'){
         enemy.velocity.x=4
+        enemy.switchSprites('run')
+    }
+    else{
+        enemy.switchSprites('idle')
+    }
+    if(enemy.velocity.y<0){
+        enemy.switchSprites('jump')
+    }
+    else if(enemy.velocity.y>0){
+        enemy.switchSprites('fall')
     }
 
     //player enemy'e vurduğunda çalışacak kod
